@@ -8,6 +8,7 @@ args @ {
     imports = [
       ./libProxy.nix
       ./blocky.nix
+      ./crowdsec.nix
       ./proxy.nix
       ./postgresql.nix
       ./monitoring/loki.nix

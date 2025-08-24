@@ -94,5 +94,14 @@ in
         example = {db1 = "/scriptDb1.sql";};
         type = types.attrsOf types.str;
       };
+      settings.crowdsec.enrollKeyFile = mkOption {
+        description = "Enroll key file for crowdsec Central console.";
+        type = types.nullOr types.path;
+      };
+      settings.crowdsec.inspectServices = mkOption {
+        description = "List of systemd units to inspect.";
+        default = [];
+        type = types.listOf types.str;
+      };
     };
   }
