@@ -8,6 +8,7 @@ args @ {
     imports = [
       ./libProxy.nix
       ./blocky.nix
+      ./fail2ban.nix
       ./proxy.nix
       ./postgresql.nix
       ./monitoring/loki.nix

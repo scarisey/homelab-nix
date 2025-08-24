@@ -65,6 +65,7 @@ in {
                       '}';
 
         access_log /var/log/nginx/json_access.log json_analytics;
+        access_log /var/log/nginx/access.log combined;
       '';
 
       recommendedGzipSettings = true;
