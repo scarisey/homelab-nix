@@ -11,6 +11,15 @@ in {
       port = 9091;
       listenAddress = "127.0.0.1";
       retentionTime = "30d";
+      remoteWrite = [
+        { name = "alloy"; url = "http://127.0.0.1:9091/api/v1/write"; }
+      ];
+      extraFlags = [
+        "--web.enable-remote-write-receiver"
+      ];
+      globalConfig = {
+        scrape_interval = "15s";
+      };
 
       scrapeConfigs = [
         {
@@ -30,6 +39,7 @@ in {
         }
       ];
     };
+
     services.prometheus.exporters.node = {
       enable = true;
       port = 9100;
