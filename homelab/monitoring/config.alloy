@@ -1,0 +1,72 @@
+logging {
+  level = "info"
+}
+
+loki.write "local" {
+  endpoint {
+    url = "http://127.0.0.1:3100/loki/api/v1/push"
+  }
+}
+
+local.file_match "nginx_logs" {
+  path_targets = [
+  {"__path__" = "/var/log/nginx/json_access.log","job"="nginx","hostname" = constants.hostname},
+  ]
+    sync_period = "5s"
+}
+
+loki.source.file "nginx" {
+  targets    = local.file_match.nginx_logs.targets
+  forward_to = [loki.write.local.receiver,]
+}
+
+loki.source.journal "fail2ban" {
+  forward_to    = [loki.write.local.receiver, loki.process.fail2ban.receiver,]
+    path          = "/var/log/journal"
+    labels        = {
+      job      = "fail2ban",
+      instance = constants.hostname,
+    }
+
+  matches = "_SYSTEMD_UNIT=fail2ban.service "
+}
+
+loki.process "fail2ban" {
+
+  forward_to = []
+
+  stage.regex {
+    expression = ".*\\[(?P<jail>[^\\]]+)\\] (?P<action>Ban|Unban) (?P<ip>[^ ]+)"
+  }
+
+  stage.metrics {
+    metric.counter {
+        name = "fail2ban_bans_total"
+        description = "Number of bans"
+        source = "action"
+        value  = "Ban"
+        action = "inc"
+    }
+
+    metric.counter {
+        name = "fail2ban_unbans_total"
+        description = "Number of unbans"
+        source = "action"
+        value  = "Unban"
+        action = "inc"
+    }
+  }
+}
+
+prometheus.exporter.self "alloy" {}
+
+prometheus.scrape "alloy" {
+  targets    = prometheus.exporter.self.alloy.targets
+  forward_to = [prometheus.remote_write.to_prom.receiver,]
+}
+
+prometheus.remote_write "to_prom" {
+  endpoint {
+    url = "http://127.0.0.1:9091/api/v1/write"
+  }
+}
