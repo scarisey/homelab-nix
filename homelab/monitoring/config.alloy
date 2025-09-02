@@ -59,14 +59,3 @@ loki.process "fail2ban" {
 }
 
 prometheus.exporter.self "alloy" {}
-
-prometheus.scrape "alloy" {
-  targets    = prometheus.exporter.self.alloy.targets
-  forward_to = [prometheus.remote_write.to_prom.receiver,]
-}
-
-prometheus.remote_write "to_prom" {
-  endpoint {
-    url = "http://127.0.0.1:9091/api/v1/write"
-  }
-}

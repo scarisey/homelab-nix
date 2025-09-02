@@ -11,11 +11,8 @@ in {
       port = 9091;
       listenAddress = "127.0.0.1";
       retentionTime = "30d";
-      remoteWrite = [
-        { name = "alloy"; url = "http://127.0.0.1:9091/api/v1/write"; }
-      ];
       extraFlags = [
-        "--web.enable-remote-write-receiver"
+        # "--web.enable-remote-write-receiver"
       ];
       globalConfig = {
         scrape_interval = "15s";
@@ -33,6 +30,7 @@ in {
                 "${config.services.prometheus.exporters.postgres.listenAddress}:${toString config.services.prometheus.exporters.postgres.port}"
                 "${config.services.prometheus.exporters.systemd.listenAddress}:${toString config.services.prometheus.exporters.systemd.port}"
                 "127.0.0.1:${toString config.services.blocky.settings.ports.http}"
+                "127.0.0.1:12345" #alloy metrics
               ];
             }
           ];
