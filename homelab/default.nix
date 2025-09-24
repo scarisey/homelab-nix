@@ -16,6 +16,7 @@ args @ {
       ./monitoring/grafana.nix
       ./monitoring/alloy.nix
       ./autoProxy.nix
+      ./users.nix
     ];
     options = import ./options.nix args;
   };

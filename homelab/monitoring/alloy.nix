@@ -14,7 +14,7 @@ in {
     #   "experimental"
     # ];
     # should also enable live debugging
-    environment.etc."alloy/config.alloy".source =  ./config.alloy;
+    environment.etc."alloy/config.alloy".source = ./config.alloy;
 
     system.activationScripts.setAlloyACLs = {
       text = ''

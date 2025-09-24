@@ -21,6 +21,26 @@ in
   with lib; {
     scarisey.homelab = {
       enable = mkEnableOption "Server settings";
+      user = lib.mkOption {
+        type = lib.types.str;
+        default = "homelab";
+        description = "User account under which homelab apps can refer to.";
+      };
+      userId = lib.mkOption {
+        type = lib.types.int;
+        default = 981;
+        description = "User account ID under which homelab apps can refer to.";
+      };
+      group = lib.mkOption {
+        type = lib.types.str;
+        default = "homelab";
+        description = "Group account under which homelab apps can refer to.";
+      };
+      groupId = lib.mkOption {
+        type = lib.types.int;
+        default = 971;
+        description = "Group account ID under which homelab apps can refer to.";
+      };
       settings.email = mkOption {
         type = types.str;
         description = "Email address used by Let's Encrypt.";
