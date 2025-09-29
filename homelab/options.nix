@@ -15,6 +15,11 @@
           type = types.str;
           description = "URL to the service (localhost).";
         };
+        proxyWebsockets = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Activate Web Sockets for this domain.";
+        };
       };
     };
 in

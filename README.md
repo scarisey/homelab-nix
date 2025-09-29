@@ -30,6 +30,7 @@ Import the module in your NixOS configuration:
           myservice = {
             domain = "service.internal.example.com";
             proxyPass = "http://localhost:8080";
+            proxyWebsockets = true;
           };
         };
         public = {
@@ -65,8 +66,8 @@ All options are under `scarisey.homelab`:
   - **internal**: (string) Prefix for internal domains. Defaults to `internal.${root}`.
   - **wildcardInternal**: (string) Wildcard for internal SSL certs. Defaults to `*.${internal}`.
   - **grafana**: (string) Domain for Grafana. Defaults to `grafana.${root}`.
-  - **lan**: (attrs) LAN-only domains. Each entry is `{ domain, proxyPass }`.
-  - **public**: (attrs) Public domains. Each entry is `{ domain, proxyPass }`.
+  - **lan**: (attrs) LAN-only domains. Each entry is `{ domain, proxyPass, proxyWebsockets }`.
+  - **public**: (attrs) Public domains. Each entry is `{ domain, proxyPass, proxyWebsockets }`.
 - **settings.blocky**: (attrs) Override/extend default Blocky DNS settings.
 - **settings.grafana**: (attrs) Override/extend default Grafana settings.
 - **settings.postgresql.postscripts**: (attrs) Postgres scripts to run after startup. Example: `{ db1 = "/scriptDb1.sql"; }`.
