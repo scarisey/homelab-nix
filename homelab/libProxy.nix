@@ -59,6 +59,7 @@
             // {
               locations."/".proxyPass = v.proxyPass;
               locations."/".proxyWebsockets = v.proxyWebsockets;
+              locations."/".extraConfig = v.extraConfig;
             };
         })
         _domains;

@@ -20,6 +20,11 @@
           default = false;
           description = "Activate Web Sockets for this domain.";
         };
+        extraConfig= mkOption {
+          type = types.str;
+          default = "";
+          description = "Extra config for nginx current virutal host.";
+        };
       };
     };
 in
