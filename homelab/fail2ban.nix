@@ -3,7 +3,7 @@
 in {
   services.fail2ban = {
     enable = true;
-    maxretry = 5;
+    maxretry = 3;
     ignoreIP = [
       "10.0.0.0/8"
       "172.16.0.0/12"
@@ -29,9 +29,13 @@ in {
       };
       "nginx-forbidden".settings = {
         enabled = true;
+        backend = "auto";
+        logpath = "/var/log/nginx/access.log";
       };
       "nginx-http-auth".settings = {
         enabled = true;
+        backend = "auto";
+        logpath = "/var/log/nginx/access.log";
       };
     };
   };
