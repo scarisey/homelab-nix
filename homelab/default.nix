@@ -17,6 +17,7 @@ args @ {
       ./monitoring/alloy.nix
       ./autoProxy.nix
       ./users.nix
+      ./restic.nix
     ];
     options = import ./options.nix args;
   };

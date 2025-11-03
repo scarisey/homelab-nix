@@ -124,5 +124,32 @@ in
         example = {db1 = "/scriptDb1.sql";};
         type = types.attrsOf types.str;
       };
+      backups.enable = mkEnableOption "Enable backups.";
+      backups.groups = mkOption {
+        description = "Groups that backup utility should be part of.";
+        default = [];
+        type = types.listOf types.str;
+      };
+      backups.repository.name = mkOption {
+        description = "Repository name.";
+        default = "${host}-backup";
+        type = types.str;
+      };
+      backups.repository.url = mkOption {
+        description = "Where the repository should be backed up.";
+        type = types.str;
+      };
+      backups.repository.environmentFile = mkOption {
+        description = "Path to environmentFile (systemd unit env file) in string.";
+        type = types.str;
+      };
+      backups.repository.passwordFile = mkOption {
+        description = "Path to passwordFile in string, to decrypt repository.";
+        type = types.str;
+      };
+      backups.repository.locations = mkOption {
+        description = "Paths to locations to backup in string.";
+        type = types.listOf types.str;
+      };
     };
   }
