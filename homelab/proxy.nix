@@ -76,6 +76,8 @@ in {
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
 
+      proxyTimeout = "600s";
+
       # Only allow PFS-enabled ciphers with AES256
       sslCiphers = "AES256+EECDH:AES256+EDH:!aNULL";
 
