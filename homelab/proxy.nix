@@ -66,6 +66,9 @@ in {
 
         access_log /var/log/nginx/json_access.log json_analytics;
         access_log /var/log/nginx/access.log combined;
+
+        set_real_ip_from 192.168.0.0/16;
+        real_ip_header X-Forwarded-For;
       '';
 
       recommendedGzipSettings = true;
