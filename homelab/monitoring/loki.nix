@@ -41,6 +41,20 @@ in {
           ];
         };
 
+        compactor = {
+          working_directory = "/var/lib/loki/retention";
+          compaction_interval = "10m";
+          retention_enabled = true;
+          retention_delete_delay = "2h";
+          retention_delete_worker_count = 150;
+          delete_request_store = "filesystem";
+        };
+
+        limits_config = {
+          volume_enabled = true;
+          retention_period = "744h";
+        };
+
         storage_config.filesystem.directory = "/var/lib/loki/chunks";
 
         analytics.reporting_enabled = false;
