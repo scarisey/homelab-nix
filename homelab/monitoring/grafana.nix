@@ -69,6 +69,7 @@ in {
       declareVirtualHostDefaults {domain = domains.grafana;}
       // {
         locations."/".proxyPass = "http://${config.services.grafana.settings.server.http_addr}:${toString config.services.grafana.settings.server.http_port}";
+        locations."/".proxyWebsockets = true;
       };
     security.acme.certs.${domains.grafana} = declareCerts domains.grafana;
   });
