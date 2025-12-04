@@ -20,6 +20,8 @@
       homelab = import ./homelab;
     };
 
+    packages = forEachSupportedSystem (pkgs: import ./packages { inherit pkgs;});
+
     formatter = forEachSupportedSystem (pkgs: pkgs.alejandra);
   };
 }
