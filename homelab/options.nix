@@ -137,6 +137,11 @@ in
         default = {};
         type = types.attrsOf types.anything;
       };
+      settings.acme = mkOption {
+        description = "Acme settings to merge to defaults.";
+        default = {};
+        type = types.attrsOf types.anything;
+      };
       settings.postgresql.postscripts = mkOption {
         description = "Scripts that will be played after postsql start. Should be idempotent.";
         default = {};

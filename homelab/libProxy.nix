@@ -1,12 +1,12 @@
 {lib, ...}: {
   _module.args = {
     libProxy = let
-      declareCerts = domain: {
+      declareCerts = cfg: domain: {
         inherit domain;
         #check https://go-acme.github.io/lego/dns/
-        dnsProvider = "ionos";
+        dnsProvider = cfg.settings.acme.dnsProvider;
         dnsPropagationCheck = true;
-        environmentFile = "/var/ionos/token";
+        environmentFile = cfg.settings.acme.environmentFile;
         group = "acme";
       };
 
@@ -72,7 +72,7 @@
       automaticDeclareCerts = conf:
         lib.mapAttrs' (k: v: {
           name = v.domain;
-          value = declareCerts v.domain;
+          value = declareCerts conf v.domain;
         }) (
           conf.settings.domains.public
           // conf.settings.domains.lan

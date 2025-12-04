@@ -15,7 +15,7 @@ in {
     wanPort = config.scarisey.homelab.settings.wanPort;
     domains = config.scarisey.homelab.settings.domains;
     declareVirtualHostDefaults = libProxy.declareVirtualHostDefaults cfg;
-    inherit (libProxy) declareCerts;
+    declareCerts = libProxy.declareCerts cfg;
   in {
     services.nginx = {
       enable = true;

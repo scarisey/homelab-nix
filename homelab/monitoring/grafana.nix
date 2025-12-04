@@ -12,7 +12,7 @@ in {
     domains = config.scarisey.homelab.settings.domains;
     customSettings = config.scarisey.homelab.settings.grafana;
     declareVirtualHostDefaults = libProxy.declareVirtualHostDefaults cfg;
-    inherit (libProxy) declareCerts;
+    declareCerts = libProxy.declareCerts cfg;
   in {
     services.grafana = {
       enable = true;
