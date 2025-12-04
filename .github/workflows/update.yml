@@ -35,9 +35,13 @@ jobs:
           git remote remove origin
           git remote add origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git checkout -b ci/auto_update
-      - name: Update flake inputs
+      - name: Update flake inputs && check
         run: |
           nix flake update --commit-lock-file --accept-flake-config
+          nix flake check
+          ./packages/cloudflareIps/update.sh
+          nix build .#packages.x86_64-linux.cloudflareIps
+          git add . && git commit -m "chore(cloudflareIps):update"
       - name: Push changes to remote
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
