@@ -1,18 +1,15 @@
 {
   fetchurl,
   jq,
-}:
-fetchurl {
-  url = "https://api.cloudflare.com/client/v4/ips";
+}: fetchurl {
+    url = "https://api.cloudflare.com/client/v4/ips";
 
-  nativeBuildInputs = [ jq ];
+    nativeBuildInputs = [jq];
 
-  downloadToTemp = true;
-  postFetch = ''
-    cat $downloadedFile | jq -r '.result.ipv4_cidrs |"allow " + .[]' >> $out
-    cat $downloadedFile | jq -r '.result.ipv6_cidrs |"allow " + .[]' >> $out
-  '';
+    downloadToTemp = true;
+    postFetch = ''
+      cat $downloadedFile | jq '.result.ipv4_cidrs + .result.ipv6_cidrs' > $out
+    '';
 
-  hash = "sha256-33DydY5oLgVhdQiezOgQ81bkLFqvGVDZ3hjG+Kz94sk=";
-}
-
+    hash = "sha256-FxtZpXPb34kDUXhoX52izWvR2Dl2rZ4xJJQMDGwPRls=";
+  }

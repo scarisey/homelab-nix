@@ -1,3 +1,3 @@
-{pkgs}:{
+{pkgs}: {
   cloudflareIps = pkgs.callPackage ./cloudflareIps {};
 }

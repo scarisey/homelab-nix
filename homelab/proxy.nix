@@ -5,6 +5,7 @@
   ...
 }: let
   enabled = config.scarisey.homelab.enable;
+  computeAllowedIPs = xs: if xs != [] then builtins.concatStringsSep "\n" ((map (x: "allow ${toString x}") xs) ++ [ "deny all" ]) else "";
 in {
   config = lib.mkIf enabled (let
     cfg = config.scarisey.homelab;
@@ -14,6 +15,7 @@ in {
     lanPort = config.scarisey.homelab.settings.lanPort;
     wanPort = config.scarisey.homelab.settings.wanPort;
     domains = config.scarisey.homelab.settings.domains;
+    allowedList = computeAllowedIPs config.scarisey.homelab.settings.proxyAllowIPs;
     declareVirtualHostDefaults = libProxy.declareVirtualHostDefaults cfg;
     declareCerts = libProxy.declareCerts cfg;
   in {
@@ -69,6 +71,7 @@ in {
 
         set_real_ip_from 192.168.0.0/16;
         real_ip_header X-Forwarded-For;
+        ${allowedList}
       '';
 
       recommendedGzipSettings = true;

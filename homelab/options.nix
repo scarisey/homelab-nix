@@ -90,6 +90,11 @@ in
         type = types.port;
         description = "If your server is behing a NAT, port by which the LAN traffic comes from.";
       };
+      settings.proxyAllowIPs = mkOption {
+        type = types.listOf types.str;
+        description = "Allow a list of CIDR to access proxy.";
+        default = [];
+      };
       settings.domains = mkOption {
         description = "Domains declaration.";
         default = {};
