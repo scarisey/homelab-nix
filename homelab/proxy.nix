@@ -2,28 +2,58 @@
   config,
   lib,
   libProxy,
+  pkgs,
   ...
 }: let
   enabled = config.scarisey.homelab.enable;
 in {
   config = lib.mkIf enabled (let
     cfg = config.scarisey.homelab;
-    email = config.scarisey.homelab.settings.email;
-    ipv4 = config.scarisey.homelab.settings.ipv4;
-    ipv6 = config.scarisey.homelab.settings.ipv6;
-    lanPort = config.scarisey.homelab.settings.lanPort;
-    wanPort = config.scarisey.homelab.settings.wanPort;
-    domains = config.scarisey.homelab.settings.domains;
+    inherit (config.scarisey.homelab.settings) email lanPort wanPort domains;
     declareVirtualHostDefaults = libProxy.declareVirtualHostDefaults cfg;
     declareCerts = libProxy.declareCerts cfg;
+    geoipDb = "/var/lib/GeoIP";
+    modsecurityConf = pkgs.callPackage ./modsecurity {};
+    inherit (config.scarisey.homelab.settings.geoip) maxmindAccountId maxmindLicenseKeyFile;
   in {
     services.nginx = {
       enable = true;
+
+      package = pkgs.nginx.override {
+        modules = [
+          pkgs.nginxModules.modsecurity
+          pkgs.nginxModules.geoip2
+        ];
+      };
+
       statusPage = true;
 
       appendHttpConfig = ''
         limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;
         limit_req_zone $binary_remote_addr zone=req_limit_per_ip:10m rate=10r/s;
+
+        geoip2 ${geoipDb}/GeoLite2-Country.mmdb {
+          auto_reload 60m;
+          $geoip2_metadata_country_build metadata build_epoch;
+
+          # Map the country ISO code to a variable
+          $geoip2_data_country_code default=XX source=$remote_addr country iso_code;
+          $geoip2_data_country_name country names en;
+        }
+
+        geoip2 ${geoipDb}/GeoLite2-City.mmdb {
+          $geoip2_data_city_name default=London city names en;
+        }
+
+        map $geoip2_data_country_code $allowed_country {
+            default 0;
+            "" 1;
+            FR 1;
+        }
+
+        modsecurity off;
+        modsecurity_rules_file ${modsecurityConf};
+
         log_format json_analytics escape=json '{'
                               '"msec": "$msec", ' # request unixtime in seconds with a milliseconds resolution
                               '"connection": "$connection", ' # connection serial number
@@ -62,6 +92,8 @@ in {
                       '"pipe": "$pipe", ' # "p" if request was pipelined, "." otherwise
                       '"gzip_ratio": "$gzip_ratio", '
                       '"http_cf_ray": "$http_cf_ray",'
+                      '"geoip_country_code": "$geoip2_data_country_code",'
+                      '"geoip_country_name": "$geoip2_data_country_name",'
                       '}';
 
         access_log /var/log/nginx/json_access.log json_analytics;
@@ -71,6 +103,12 @@ in {
         real_ip_header X-Forwarded-For;
       '';
 
+
+      prependConfig = ''
+        worker_rlimit_core 500M;
+        working_directory /tmp/;
+        worker_processes 2;
+      '';
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
@@ -132,6 +170,25 @@ in {
         };
     };
     users.users.nginx.extraGroups = ["acme"];
+
+    environment.systemPackages = with pkgs; [
+      libmodsecurity
+    ];
+
+    services.geoipupdate = {
+      enable = true;
+      settings = {
+        # Replace with your actual MaxMind Account ID and License Key
+        AccountID = maxmindAccountId;
+        LicenseKey = maxmindLicenseKeyFile;
+        # valid edition IDs: "GeoLite2-City", "GeoLite2-Country", "GeoLite2-ASN"
+        EditionIDs = ["GeoLite2-Country" "GeoLite2-City"];
+        # Explicitly set the directory so we can reference it in Nginx
+        DatabaseDirectory = geoipDb;
+      };
+      # Update interval (e.g., weekly)
+      interval = "weekly";
+    };
 
     security.acme.acceptTerms = true;
     security.acme.defaults.email = email;
