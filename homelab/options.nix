@@ -142,6 +142,16 @@ in
         default = {};
         type = types.attrsOf types.anything;
       };
+      settings.geoip = {
+        maxmindAccountId = mkOption {
+          description = "Maxmind account id to fetch db for geoip2.";
+          type = types.int;
+        };
+        maxmindLicenseKeyFile = mkOption {
+          description = "Maxmind license key to fetch db for geoip2.";
+          type = types.path;
+        };
+      };
       settings.postgresql.postscripts = mkOption {
         description = "Scripts that will be played after postsql start. Should be idempotent.";
         default = {};

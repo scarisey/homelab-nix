@@ -20,6 +20,10 @@
       homelab = import ./homelab;
     };
 
+    packages = forEachSupportedSystem (pkgs: {coreruleset = pkgs.callPackage ./packages/coreruleset {};});
+
+    overlays.default = final: pref: {coreruleset = final.callPackage ./packages/coreruleset {};};
+
     formatter = forEachSupportedSystem (pkgs: pkgs.alejandra);
   };
 }
