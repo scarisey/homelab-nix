@@ -61,7 +61,8 @@
               locations."/".proxyWebsockets = v.proxyWebsockets;
               locations."/".extraConfig = ''
                 add_header X-Country-Code $geoip2_data_country_code;
-                if ($allowed_country = 0) {
+
+                if ($block_request) {
                   return 403;
                 }
 

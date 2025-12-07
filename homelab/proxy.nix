@@ -13,7 +13,6 @@ in {
     declareVirtualHostDefaults = libProxy.declareVirtualHostDefaults cfg;
     declareCerts = libProxy.declareCerts cfg;
     geoipDb = "/var/lib/GeoIP";
-    modsecurityConf = pkgs.callPackage ./modsecurity {};
     inherit (config.scarisey.homelab.settings.geoip) maxmindAccountId maxmindLicenseKeyFile;
   in {
     services.nginx = {
@@ -21,7 +20,6 @@ in {
 
       package = pkgs.nginx.override {
         modules = [
-          pkgs.nginxModules.modsecurity
           pkgs.nginxModules.geoip2
         ];
       };
@@ -41,6 +39,13 @@ in {
           $geoip2_data_country_name country names en;
         }
 
+        geo $is_private_ip {
+          default 0;
+          10.0.0.0/8 1;
+          172.16.0.0/12 1;
+          192.168.0.0/16 1;
+          127.0.0.0/8 1;
+        }
         geoip2 ${geoipDb}/GeoLite2-City.mmdb {
           $geoip2_data_city_name default=London city names en;
         }
@@ -51,8 +56,13 @@ in {
             FR 1;
         }
 
-        modsecurity off;
-        modsecurity_rules_file ${modsecurityConf};
+        map "$is_private_ip:$allowed_country" $block_request {
+          default 1;        # Block by default
+          "1:1" 0;          # Private IP + not blocked country = allow
+          "1:0" 0;          # Private IP + blocked country = allow (private takes precedence)
+          "0:1" 0;          # Public IP + not blocked country = allow
+          "0:0" 1;          # Public IP + blocked country = BLOCK
+        }
 
         log_format json_analytics escape=json '{'
                               '"msec": "$msec", ' # request unixtime in seconds with a milliseconds resolution
@@ -104,11 +114,6 @@ in {
       '';
 
 
-      prependConfig = ''
-        worker_rlimit_core 500M;
-        working_directory /tmp/;
-        worker_processes 2;
-      '';
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
@@ -170,10 +175,6 @@ in {
         };
     };
     users.users.nginx.extraGroups = ["acme"];
-
-    environment.systemPackages = with pkgs; [
-      libmodsecurity
-    ];
 
     services.geoipupdate = {
       enable = true;

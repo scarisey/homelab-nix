@@ -71,9 +71,8 @@ in {
         locations."/".proxyPass = "http://${config.services.grafana.settings.server.http_addr}:${toString config.services.grafana.settings.server.http_port}";
         locations."/".proxyWebsockets = true;
         locations."/".extraConfig = ''
-          modsecurity off;
           add_header X-Country-Code $geoip2_data_country_code;
-          if ($allowed_country = 0) {
+          if ($block_request) {
             return 403;
           }
         '';
