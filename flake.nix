@@ -20,9 +20,9 @@
       homelab = import ./homelab;
     };
 
-    packages = forEachSupportedSystem (pkgs: {coreruleset = pkgs.callPackage ./packages/coreruleset {};});
+    packages = forEachSupportedSystem (pkgs: import ./packages/default.nix {inherit pkgs;});
 
-    overlays.default = final: pref: {coreruleset = final.callPackage ./packages/coreruleset {};};
+    overlays.default = final: pref: import ./packages/default.nix {pkgs = final;};
 
     formatter = forEachSupportedSystem (pkgs: pkgs.alejandra);
   };

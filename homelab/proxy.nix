@@ -113,7 +113,6 @@ in {
         real_ip_header X-Forwarded-For;
       '';
 
-
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
