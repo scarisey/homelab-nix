@@ -14,9 +14,9 @@ OUTPUT=$(nix build .#packages.x86_64-linux.$PACKAGE_NAME 2>&1 || true)
 NEW_HASH=$(echo "$OUTPUT" | grep "got:" | awk '{print $2}' | tr -d '[:space:]')
 
 if [ -z "$NEW_HASH" ]; then
-  echo "Failed to extract new hash. Output was:"
+  echo "No new hash found"
   echo "$OUTPUT"
-  exit 1
+  exit 0
 fi
 
 echo "Found new hash: $NEW_HASH"
