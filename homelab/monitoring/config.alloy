@@ -58,4 +58,15 @@ loki.process "fail2ban" {
   }
 }
 
+loki.source.journal "nixos_upgrade" {
+  forward_to = [loki.write.local.receiver,]
+  path       = "/var/log/journal"
+  labels     = {
+    job      = "nixos-upgrade",
+    instance = constants.hostname,
+  }
+
+  matches = "_SYSTEMD_UNIT=nixos-upgrade.service"
+}
+
 prometheus.exporter.self "alloy" {}
