@@ -2,7 +2,7 @@
 set -e
 
 # Configuration
-PACKAGE_NAME="nginx_ultimate_bad_bot_blocker"
+PACKAGE_NAME="nginx-ultimate-bad-bot-blocker"
 FILE_PATH="packages/nginx-ultimate-bad-bot-blocker/default.nix"
 
 echo "Updating $PACKAGE_NAME..."

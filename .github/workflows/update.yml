@@ -40,7 +40,9 @@ jobs:
           nix flake update --commit-lock-file --accept-flake-config
           nix flake check
           ./packages/coreruleset/update.sh
+          ./packages/nginx-ultimate-bad-bot-blocker/update.sh
           nix build .#packages.x86_64-linux.coreruleset
+          nix build .#packages.x86_64-linux.nginx-ultimate-bad-bot-blocker
           git add . && git commit -m "chore(coreruleset):update"
       - name: Push changes to remote
         env:
