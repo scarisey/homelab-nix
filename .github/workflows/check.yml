@@ -37,3 +37,4 @@ jobs:
         run: |
           nix flake check
           nix build .#packages.x86_64-linux.coreruleset
+          nix build .#packages.x86_64-linux.nginx-ultimate-bad-bot-blocker
