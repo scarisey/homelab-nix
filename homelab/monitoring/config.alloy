@@ -70,3 +70,31 @@ loki.source.journal "nixos_upgrade" {
 }
 
 prometheus.exporter.self "alloy" {}
+
+otelcol.receiver.otlp "homelab" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+
+  output {
+    metrics = [otelcol.processor.batch.default.input]
+    logs    = [otelcol.processor.batch.default.input]
+    traces  = [otelcol.processor.batch.default.input]
+  }
+}
+otelcol.processor.batch "default" {
+  output {
+    metrics = [otelcol.exporter.prometheus.bridge.input]
+  }
+}
+otelcol.exporter.prometheus "bridge" {
+  forward_to = [prometheus.remote_write.local_prometheus.receiver]
+}
+prometheus.remote_write "local_prometheus" {
+  endpoint {
+    url = "http://localhost:9091/api/v1/write"
+  }
+}

@@ -12,7 +12,7 @@ in {
       listenAddress = "127.0.0.1";
       retentionTime = "30d";
       extraFlags = [
-        # "--web.enable-remote-write-receiver"
+        "--web.enable-remote-write-receiver"
       ];
       globalConfig = {
         scrape_interval = "15s";
