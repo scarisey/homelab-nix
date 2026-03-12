@@ -27,25 +27,6 @@
         };
       };
     };
-  textfileCollectorType = with lib;
-    types.submodule {
-      options = {
-        path = mkOption {
-          type = types.str;
-          description = "Path to the file that will be collected by the exporter.";
-          default = "/var/lib/node_exporter/textfile_collector";
-        };
-        flakeRevisionPath = mkOption {
-          type = types.str;
-          description = "Path to the file containing the actual flake's git revision.";
-          default = "/etc/flake-revision";
-        };
-        publicFlakeUrl = mkOption {
-          type = types.str;
-          description = "Url to the public flake repository.";
-        };
-      };
-    };
 in
   with lib; {
     scarisey.homelab = {
@@ -184,10 +165,6 @@ in
       backups.repository.locations = mkOption {
         description = "Paths to locations to backup in string.";
         type = types.listOf types.str;
-      };
-      textfileCollector = mkOption {
-        description = "Collect manually computed prometheus metrics. Actually contains only flake revision.";
-        type = textfileCollectorType;
       };
     };
   }

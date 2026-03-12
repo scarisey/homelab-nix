@@ -47,9 +47,6 @@ in {
         "systemd"
         "processes"
       ];
-      extraFlags = [
-        "--collector.textfile.directory=${config.scarisey.homelab.textfileCollector.path}"
-      ];
     };
 
     services.prometheus.exporters.process = {

@@ -15,7 +15,6 @@ args @ {
       ./monitoring/prometheus.nix
       ./monitoring/grafana.nix
       ./monitoring/alloy.nix
-      ./monitoring/textfile_collector.nix
       ./autoProxy.nix
       ./users.nix
       ./restic.nix
