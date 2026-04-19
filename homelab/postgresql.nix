@@ -17,7 +17,7 @@ in {
       authentication = ''
         # TYPE  DATABASE        USER            ADDRESS                 METHOD
         local   all             all                                     peer
-        host    all             all             127.0.0.1/32            scram-sha-256
+        hostssl all             all             127.0.0.1/32            scram-sha-256
       '';
 
       settings = {
@@ -31,6 +31,10 @@ in {
         shared_buffers = "512MB";
         jit = true;
         track_io_timing = true;
+
+        ssl = true;
+        ssl_cert_file = "${config.security.acme.certs."postgres.${cfg.settings.domains.internal}".directory}/fullchain.pem";
+        ssl_key_file = "${config.security.acme.certs."postgres.${cfg.settings.domains.internal}".directory}/key.pem";
       };
     };
 
@@ -41,6 +45,19 @@ in {
       environment.PSQL = "psql --port=${toString postgreCfg.settings.port}";
       path = [pkgs.postgresql];
       script = builtins.concatStringsSep "\n" (lib.mapAttrsToList (k: v: "$PSQL ${k} -f ${v}") cfg.settings.postgresql.postscripts);
+    };
+
+    security.acme.certs."postgres.${cfg.settings.domains.internal}" = {
+        domain = cfg.settings.domains.wildcardInternal;
+        #check https://go-acme.github.io/lego/dns/
+        dnsProvider = cfg.settings.acme.dnsProvider;
+        dnsPropagationCheck = true;
+        environmentFile = cfg.settings.acme.environmentFile;
+        group = "postgres";
+        postRun = ''
+          chown postgres:postgres /var/lib/acme/postgres.${cfg.settings.domains.internal}/*
+          chmod 0400 /var/lib/acme/postgres.${cfg.settings.domains.internal}/*
+        '';
     };
   });
 }
