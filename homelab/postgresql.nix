@@ -47,6 +47,16 @@ in {
       script = builtins.concatStringsSep "\n" (lib.mapAttrsToList (k: v: "$PSQL ${k} -f ${v}") cfg.settings.postgresql.postscripts);
     };
 
+    systemd.services."homelab-postgresql-permissions" = {
+      requiredBy = ["postgresql.service"];
+      before = ["postgresql.service"];
+      serviceConfig.Type = "oneshot";
+      script = ''
+        chown postgres:postgres /var/lib/acme/postgres.${cfg.settings.domains.internal}/*
+        chmod 0400 /var/lib/acme/postgres.${cfg.settings.domains.internal}/*
+      '';
+    };
+
     security.acme.certs."postgres.${cfg.settings.domains.internal}" = {
         domain = cfg.settings.domains.wildcardInternal;
         #check https://go-acme.github.io/lego/dns/
