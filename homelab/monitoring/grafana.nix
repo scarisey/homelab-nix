@@ -50,6 +50,11 @@ in {
               type = "loki";
               url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}";
             }
+            {
+              name = "Tempo";
+              type = "tempo";
+              url = "http://localhost:${toString config.services.tempo.settings.server.http_listen_port}";
+            }
           ];
         };
       };

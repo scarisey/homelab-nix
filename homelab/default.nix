@@ -14,6 +14,7 @@ args @ {
       ./monitoring/loki.nix
       ./monitoring/prometheus.nix
       ./monitoring/grafana.nix
+      ./monitoring/tempo.nix
       ./monitoring/alloy.nix
       ./autoProxy.nix
       ./users.nix
