@@ -56,7 +56,15 @@ in {
         chmod 0400 /var/lib/acme/postgres.${cfg.settings.domains.internal}/*
       '';
     };
-
+    systemd.services."acme-pre-postgres" = {
+        before = ["acme-order-renew-postgres.${cfg.settings.domains.internal}.service"];
+        requiredBy = ["acme-order-renew-postgres.${cfg.settings.domains.internal}.service"];
+        serviceConfig.Type = "oneshot";
+        script = ''
+          chown acme:postgres /var/lib/acme/postgres.${cfg.settings.domains.internal}/*
+          chmod 0540 /var/lib/acme/postgres.${cfg.settings.domains.internal}/*
+        '';
+    };
     security.acme.certs."postgres.${cfg.settings.domains.internal}" = {
         domain = cfg.settings.domains.wildcardInternal;
         #check https://go-acme.github.io/lego/dns/
