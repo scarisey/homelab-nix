@@ -1,3 +1,6 @@
+livedebugging {
+  enabled = true
+}
 logging {
   level = "info"
 }
