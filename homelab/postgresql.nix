@@ -60,9 +60,11 @@ in {
         before = ["acme-order-renew-postgres.${cfg.settings.domains.internal}.service"];
         requiredBy = ["acme-order-renew-postgres.${cfg.settings.domains.internal}.service"];
         serviceConfig.Type = "oneshot";
+        path = [pkgs.findutils];
         script = ''
-          chown acme:postgres /var/lib/acme/postgres.${cfg.settings.domains.internal}/*
-          chmod 0540 /var/lib/acme/postgres.${cfg.settings.domains.internal}/*
+          chown -R acme:postgres /var/lib/acme/postgres.${cfg.settings.domains.internal}/
+          find /var/lib/acme/postgres.${cfg.settings.domains.internal}/ -type d -exec chmod 0750 {} \;
+          find /var/lib/acme/postgres.${cfg.settings.domains.internal}/ -type f -exec chmod 0640 {} \;
         '';
     };
     security.acme.certs."postgres.${cfg.settings.domains.internal}" = {
