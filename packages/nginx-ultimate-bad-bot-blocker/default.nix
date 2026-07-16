@@ -3,5 +3,5 @@ pkgs.fetchFromGitHub {
   owner = "mitchellkrogza";
   repo = "nginx-ultimate-bad-bot-blocker";
   rev = "master";
-  hash = "sha256-Kwv30SRxq1EOyPUXtr5PZ5tYcRu8qsPocZ25OiK7YfI=";
+  hash = "sha256-zfVfCoJ2fkxVHNf+cHZ6CGCs1VEf/9Jhh4z/osW05Ws=";
 }
